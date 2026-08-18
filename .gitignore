@@ -1,0 +1,8 @@
+node_modules/
+dist/
+data/store.json
+data/store.json.*
+data/access-key.txt
+data/server.pid
+*.log
+.DS_Store
