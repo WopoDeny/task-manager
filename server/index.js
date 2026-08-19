@@ -11,7 +11,10 @@ import { Scheduler } from './scheduler.js';
 import { inspectPath } from './file-ops.js';
 import { nextOccurrence } from './schedule.js';
 import { normalizeTask } from './validation.js';
+<<<<<<< HEAD
 import { createNetworkBrowser } from './network-browser.js';
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dataDirectory = process.env.TASK_MANAGER_DATA_DIR
@@ -22,7 +25,10 @@ const host = process.env.TASK_MANAGER_HOST || '0.0.0.0';
 const app = express();
 const execFileAsync = promisify(execFile);
 const store = new JsonStore(path.join(dataDirectory, 'store.json'));
+<<<<<<< HEAD
 const networkBrowser = createNetworkBrowser(process.env.TASK_MANAGER_NETWORK_ROOTS);
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 await store.load();
 
 async function ensureAccessKey() {
@@ -64,6 +70,7 @@ function asyncRoute(handler) {
 }
 
 function networkAddresses() {
+<<<<<<< HEAD
   const addresses = new Set();
   for (const interfaces of Object.values(os.networkInterfaces())) {
     for (const item of interfaces || []) {
@@ -95,6 +102,15 @@ async function inspectPathWithTimeout(value) {
   } finally {
     clearTimeout(timer);
   }
+=======
+  const addresses = [];
+  for (const interfaces of Object.values(os.networkInterfaces())) {
+    for (const item of interfaces || []) {
+      if (item.family === 'IPv4' && !item.internal) addresses.push(`http://${item.address}:${port}`);
+    }
+  }
+  return addresses;
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 }
 
 async function selectFolderOnHost() {
@@ -107,6 +123,7 @@ async function selectFolderOnHost() {
 
   const script = [
     'Add-Type -AssemblyName System.Windows.Forms',
+<<<<<<< HEAD
     '$owner = New-Object System.Windows.Forms.Form',
     'try {',
     '  $owner.ShowInTaskbar = $false',
@@ -128,6 +145,14 @@ async function selectFolderOnHost() {
     '} finally {',
     '  $owner.Close()',
     '  $owner.Dispose()',
+=======
+    '$dialog = New-Object System.Windows.Forms.FolderBrowserDialog',
+    "$dialog.Description = 'Select a folder for Task Manager'",
+    '$dialog.ShowNewFolderButton = $true',
+    'if ($dialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {',
+    '  $bytes = [System.Text.Encoding]::UTF8.GetBytes($dialog.SelectedPath)',
+    '  [Console]::Out.Write([Convert]::ToBase64String($bytes))',
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
     '}'
   ].join('\n');
 
@@ -136,7 +161,11 @@ async function selectFolderOnHost() {
     ({ stdout } = await execFileAsync('powershell.exe', ['-NoLogo', '-NoProfile', '-STA', '-Command', script], {
       encoding: 'utf8',
       windowsHide: true,
+<<<<<<< HEAD
       timeout: 5 * 60 * 1_000,
+=======
+      timeout: 10 * 60 * 1_000,
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
       maxBuffer: 1024 * 1024
     }));
   } catch (cause) {
@@ -188,6 +217,7 @@ app.get('/api/dashboard', (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 app.get('/api/state', (req, res) => {
   const snapshot = store.snapshot();
   const schedulerStatus = scheduler.status();
@@ -214,6 +244,8 @@ app.get('/api/state', (req, res) => {
   });
 });
 
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 app.get('/api/tasks', (req, res) => {
   const query = String(req.query.q || '').trim().toLowerCase();
   const tasks = store.snapshot().tasks
@@ -294,12 +326,17 @@ app.post('/api/tasks/:id/cancel', (req, res, next) => {
 
 app.post('/api/paths/inspect', asyncRoute(async (req, res) => {
   const paths = Array.isArray(req.body?.paths) ? req.body.paths.slice(0, 50) : [];
+<<<<<<< HEAD
   const results = await Promise.all(paths.map(inspectPathWithTimeout));
+=======
+  const results = await Promise.all(paths.map(value => inspectPath(value)));
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   res.json({ results });
 }));
 
 app.post('/api/paths/select-folder', asyncRoute(async (req, res) => {
   if (!isHostRequest(req)) {
+<<<<<<< HEAD
     return res.json({ mode: 'network', path: null, cancelled: false });
   }
   const selectedPath = await selectFolderOnHost();
@@ -309,6 +346,14 @@ app.post('/api/paths/select-folder', asyncRoute(async (req, res) => {
 app.post('/api/paths/browse-network', asyncRoute(async (req, res) => {
   const result = await networkBrowser.browse(req.body?.path);
   return res.json(result);
+=======
+    return res.status(409).json({
+      error: { code: 'HOST_ONLY_PICKER', message: 'Open Task Manager on the server computer to use the native folder picker.' }
+    });
+  }
+  const selectedPath = await selectFolderOnHost();
+  return res.json({ path: selectedPath, cancelled: !selectedPath });
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 }));
 
 app.get('/api/runs', (req, res) => {
@@ -358,8 +403,12 @@ const server = app.listen(port, host, async () => {
   try {
     await fs.writeFile(pidPath, `${process.pid}\n`, 'utf8');
     console.log(`Task Manager is running at http://127.0.0.1:${port}`);
+<<<<<<< HEAD
     const addresses = networkAddresses();
     for (const item of addresses) console.log(`Local network: ${item.url}`);
+=======
+    for (const url of networkAddresses()) console.log(`Local network: ${url}`);
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
     console.log(`Access key: ${accessKey}`);
     await scheduler.start();
   } catch (error) {

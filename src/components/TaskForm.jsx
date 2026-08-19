@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api, json } from '../lib/api.js';
 import { Icon } from './Icon.jsx';
+<<<<<<< HEAD
 import { NetworkFolderPicker } from './NetworkFolderPicker.jsx';
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 
 const weekdays = [
   { value: 1, label: 'Mon' }, { value: 2, label: 'Tue' }, { value: 3, label: 'Wed' },
@@ -44,17 +47,28 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
   const [saving, setSaving] = useState(false);
   const [checking, setChecking] = useState(false);
   const [browsing, setBrowsing] = useState(null);
+<<<<<<< HEAD
   const [networkPicker, setNetworkPicker] = useState(null);
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   const [pathResults, setPathResults] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const closeOnEscape = event => {
+<<<<<<< HEAD
       if (event.key === 'Escape' && !saving && !networkPicker) onClose();
     };
     window.addEventListener('keydown', closeOnEscape);
     return () => window.removeEventListener('keydown', closeOnEscape);
   }, [networkPicker, onClose, saving]);
+=======
+      if (event.key === 'Escape' && !saving) onClose();
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [onClose, saving]);
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 
   const valid = useMemo(() => (
     form.name.trim() && form.sources.some(source => source.path.trim()) && form.destination.path.trim()
@@ -126,6 +140,7 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
     }
   }
 
+<<<<<<< HEAD
   function selectNetworkFolder(value) {
     if (networkPicker?.target === 'source') updateSource(networkPicker.index, value);
     else {
@@ -135,15 +150,20 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
     setNetworkPicker(null);
   }
 
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   async function browseFolder(target, index = null) {
     const browseId = target === 'source' ? `source-${index}` : 'destination';
     setBrowsing(browseId);
     try {
       const response = await api('/api/paths/select-folder', { method: 'POST' });
+<<<<<<< HEAD
       if (response.mode === 'network') {
         setNetworkPicker({ target, index });
         return;
       }
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
       if (!response.path) return;
       if (target === 'source') updateSource(index, response.path);
       else {
@@ -151,11 +171,15 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
         setPathResults([]);
       }
     } catch (requestError) {
+<<<<<<< HEAD
       if (requestError.code === 'HOST_ONLY_PICKER') {
         setNetworkPicker({ target, index });
       } else {
         notify(requestError.message, 'error');
       }
+=======
+      notify(requestError.message, 'error');
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
     } finally {
       setBrowsing(null);
     }
@@ -211,12 +235,16 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
               : { className: 'warning', label: 'Folder not empty' }
         : { className: 'future', label: 'Will be created' };
 
+<<<<<<< HEAD
   const networkPickerInitialPath = networkPicker?.target === 'source'
     ? form.sources[networkPicker.index]?.path || ''
     : form.destination.path;
 
   return (
     <>
+=======
+  return (
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
     <div className="modal-shell" role="dialog" aria-modal="true" aria-labelledby="task-form-title">
       <button className="modal-backdrop" onClick={onClose} aria-label="Close" />
       <form className="task-modal" onSubmit={submit}>
@@ -243,7 +271,11 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
               <div className="section-title-row">
                 <div>
                   <h3>Source folders</h3>
+<<<<<<< HEAD
                   <p>Select a local or network folder, then append any folders that will be created later.</p>
+=======
+                  <p>Paths may point to folders that will be created later.</p>
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
                 </div>
                 <button type="button" className="button subtle small" onClick={addSource} disabled={form.sources.length >= 50} title={form.sources.length >= 50 ? 'Maximum 50 source folders' : 'Add another source folder'}><Icon name="plus" size={15} /> Add source</button>
               </div>
@@ -261,16 +293,26 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
                     <div className="path-row" key={index}>
                       <div className="path-input-wrap">
                         <Icon name="folder" size={17} />
+<<<<<<< HEAD
                         <input className="text-input path-input" maxLength={1000} value={source.path} onChange={event => updateSource(index, event.target.value)} placeholder="\\\\192.168.33.27\\ShareName\\Incoming" aria-label={`Source folder ${index + 1}`} autoComplete="off" spellCheck={false} />
                         {state && <span className={`path-state ${state.className}`}>{state.label}</span>}
                       </div>
                       <button type="button" className="button subtle browse-button" onClick={() => browseFolder('source', index)} disabled={browsing !== null}>{browsing === `source-${index}` ? 'Selecting…' : 'Browse folders'}</button>
+=======
+                        <input className="text-input path-input" maxLength={1000} value={source.path} onChange={event => updateSource(index, event.target.value)} placeholder="C:\\Department\\Incoming" aria-label={`Source folder ${index + 1}`} />
+                        {state && <span className={`path-state ${state.className}`}>{state.label}</span>}
+                      </div>
+                      <button type="button" className="button subtle browse-button" onClick={() => browseFolder('source', index)} disabled={browsing !== null}>{browsing === `source-${index}` ? 'Selecting…' : 'Browse'}</button>
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
                       {form.sources.length > 1 && <button type="button" className="icon-button danger-soft" onClick={() => removeSource(index)} aria-label="Remove source"><Icon name="close" size={16} /></button>}
                     </div>
                   );
                 })}
               </div>
+<<<<<<< HEAD
               <div className="path-help">Network example: \\192.168.33.27\ShareName\folder.</div>
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
               <label className="toggle-row">
                 <span><strong>Require every source</strong><small>Fail safely instead of producing an incomplete collection.</small></span>
                 <input type="checkbox" checked={form.options.requireAllSources} onChange={event => update('options.requireAllSources', event.target.checked)} />
@@ -287,10 +329,17 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
               <div className="path-row destination-input">
                 <div className="path-input-wrap">
                   <Icon name="arrow" size={17} />
+<<<<<<< HEAD
                   <input className="text-input path-input" maxLength={1000} value={form.destination.path} onChange={event => { update('destination.path', event.target.value); setPathResults([]); }} placeholder="\\\\192.168.33.27\\ShareName\\Collections\\Monday" aria-label="Destination folder" autoComplete="off" spellCheck={false} />
                   {destinationState && <span className={`path-state ${destinationState.className}`}>{destinationState.label}</span>}
                 </div>
                 <button type="button" className="button subtle browse-button" onClick={() => browseFolder('destination')} disabled={browsing !== null}>{browsing === 'destination' ? 'Selecting…' : 'Browse folders'}</button>
+=======
+                  <input className="text-input path-input" maxLength={1000} value={form.destination.path} onChange={event => { update('destination.path', event.target.value); setPathResults([]); }} placeholder="D:\\Collections\\Monday" aria-label="Destination folder" />
+                  {destinationState && <span className={`path-state ${destinationState.className}`}>{destinationState.label}</span>}
+                </div>
+                <button type="button" className="button subtle browse-button" onClick={() => browseFolder('destination')} disabled={browsing !== null}>{browsing === 'destination' ? 'Selecting…' : 'Browse'}</button>
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
               </div>
               <div className="retention-box">
                 <label className="toggle-row compact">
@@ -359,6 +408,7 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
         </footer>
       </form>
     </div>
+<<<<<<< HEAD
     {networkPicker && (
       <NetworkFolderPicker
         initialPath={networkPickerInitialPath}
@@ -367,5 +417,7 @@ export function TaskForm({ task, onClose, onSaved, notify }) {
       />
     )}
     </>
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   );
 }

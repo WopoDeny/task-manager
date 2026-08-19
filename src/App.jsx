@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+=======
+import { useCallback, useEffect, useMemo, useState } from 'react';
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 import { api, json, setAccessKey } from './lib/api.js';
 import { formatBytes, formatDate, formatRelative, scheduleText, statusLabel } from './lib/format.js';
 import { Icon } from './components/Icon.jsx';
@@ -61,8 +65,14 @@ function Login({ onAuthenticated }) {
   );
 }
 
+<<<<<<< HEAD
 function Overview({ dashboard, tasks, openTasks, openCreate }) {
   const stats = dashboard?.stats || {};
+=======
+function Overview({ dashboard, openTasks, openCreate }) {
+  const stats = dashboard?.stats || {};
+  const tasks = dashboard?.tasks || [];
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   const recentRuns = dashboard?.recentRuns || [];
   const runningIds = dashboard?.runningTaskIds || [];
   return (
@@ -188,7 +198,10 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [clock, setClock] = useState(new Date());
+<<<<<<< HEAD
   const refreshInFlight = useRef(null);
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
 
   const notify = useCallback((message, type = 'info') => {
     setToast({ message, type, id: Date.now() });
@@ -210,6 +223,7 @@ export default function App() {
   }, [deleteCandidate]);
 
   const refresh = useCallback(async (quiet = false) => {
+<<<<<<< HEAD
     if (refreshInFlight.current) return refreshInFlight.current;
     const request = (async () => {
       try {
@@ -229,6 +243,20 @@ export default function App() {
       return await request;
     } finally {
       if (refreshInFlight.current === request) refreshInFlight.current = null;
+=======
+    try {
+      const [dashboardData, taskData, runData, cleanupData] = await Promise.all([
+        api('/api/dashboard'), api('/api/tasks'), api('/api/runs?limit=150'), api('/api/cleanups')
+      ]);
+      setDashboard(dashboardData);
+      setTasks(taskData.tasks);
+      setRuns(runData.runs);
+      setCleanups(cleanupData.cleanups);
+      setAuthenticated(true);
+    } catch (error) {
+      if (error.status === 401) setAuthenticated(false);
+      else if (!quiet) notify(error.message, 'error');
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
     }
   }, [notify]);
 
@@ -241,6 +269,7 @@ export default function App() {
 
   useEffect(() => {
     if (!authenticated) return;
+<<<<<<< HEAD
     const poll = () => {
       if (!document.hidden) refresh(true);
     };
@@ -255,6 +284,11 @@ export default function App() {
       clearInterval(time);
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
+=======
+    const polling = setInterval(() => refresh(true), 3_000);
+    const time = setInterval(() => setClock(new Date()), 30_000);
+    return () => { clearInterval(polling); clearInterval(time); };
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   }, [authenticated, refresh]);
 
   async function action(path, success, method = 'POST') {
@@ -297,7 +331,11 @@ export default function App() {
         </header>
 
         <div className="page-content">
+<<<<<<< HEAD
           {page === 'overview' && <Overview dashboard={dashboard} tasks={tasks} openTasks={() => setPage('tasks')} openCreate={() => setEditor({ mode: 'create' })} />}
+=======
+          {page === 'overview' && <Overview dashboard={dashboard} openTasks={() => setPage('tasks')} openCreate={() => setEditor({ mode: 'create' })} />}
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
           {page === 'tasks' && <TasksPage tasks={tasks} runningIds={dashboard.runningTaskIds} search={search} setSearch={setSearch} onCreate={() => setEditor({ mode: 'create' })} onEdit={task => setEditor({ mode: 'edit', task })} onRun={task => action(`/api/tasks/${task.id}/run`, 'Execution started.')} onCancel={task => action(`/api/tasks/${task.id}/cancel`, 'Cancellation requested.')} onToggle={task => action(`/api/tasks/${task.id}/toggle`, task.enabled ? 'Schedule paused.' : 'Schedule enabled.')} onDelete={deleteTask} />}
           {page === 'activity' && <ActivityPage runs={runs} cleanups={cleanups} />}
         </div>

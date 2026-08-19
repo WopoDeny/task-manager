@@ -205,7 +205,11 @@ export class Scheduler extends EventEmitter {
           const run = this.store.data.runs.find(item => item.id === runSnapshot.id);
           if (run) run.progress = progress;
           const now = Date.now();
+<<<<<<< HEAD
           if (now - lastProgressSave > 2_000) {
+=======
+          if (now - lastProgressSave > 750) {
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
             lastProgressSave = now;
             this.store.save().catch(error => this.emit('error', error));
           }

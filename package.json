@@ -1,6 +1,10 @@
 {
   "name": "task-manager-local",
+<<<<<<< HEAD
   "version": "1.6.1",
+=======
+  "version": "1.4.0",
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   "private": true,
   "description": "Offline-first scheduled folder collection for local networks",
   "type": "module",
@@ -9,7 +13,11 @@
     "dev:ui": "vite",
     "build": "vite build",
     "start": "node server/index.js",
+<<<<<<< HEAD
     "check": "node --check server/index.js && node --check server/network-browser.js && node --check server/scheduler.js && node --check server/file-ops.js && node --check server/store.js && node --check server/schedule.js && node --check server/validation.js"
+=======
+    "check": "node --check server/index.js && node --check server/scheduler.js && node --check server/file-ops.js && node --check server/store.js && node --check server/schedule.js && node --check server/validation.js"
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   },
   "engines": {
     "node": ">=22.12.0"

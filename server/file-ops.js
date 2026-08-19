@@ -258,7 +258,10 @@ export async function executeCopy(task, run, hooks = {}) {
 
   let copiedFiles = 0;
   let copiedBytes = 0;
+<<<<<<< HEAD
   let lastProgressAt = 0;
+=======
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
   let destinationCreated = false;
   let ownershipWritten = false;
 
@@ -290,6 +293,7 @@ export async function executeCopy(task, run, hooks = {}) {
       }
       copiedFiles += 1;
       copiedBytes += file.size;
+<<<<<<< HEAD
       const progressAt = Date.now();
       if (progressAt - lastProgressAt >= 100 || copiedFiles === analysis.totalFiles) {
         lastProgressAt = progressAt;
@@ -303,6 +307,17 @@ export async function executeCopy(task, run, hooks = {}) {
             : Math.min(100, Math.round((copiedFiles / Math.max(1, analysis.totalFiles)) * 100))
         });
       }
+=======
+      onProgress({
+        copiedFiles,
+        copiedBytes,
+        totalFiles: analysis.totalFiles,
+        totalBytes: analysis.totalBytes,
+        percent: analysis.totalBytes
+          ? Math.min(100, Math.round((copiedBytes / analysis.totalBytes) * 100))
+          : Math.min(100, Math.round((copiedFiles / Math.max(1, analysis.totalFiles)) * 100))
+      });
+>>>>>>> e220cd92a887785ca256ee9274737d0262f84aec
     });
 
     const completedAt = new Date().toISOString();
